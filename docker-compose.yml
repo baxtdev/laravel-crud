@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  laravel-app:
+    build: .
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+
+    environment:
+      - APP_NAME=Laravel
+      - APP_ENV=local
+      - APP_KEY=base64:KGQ12CGDgQVgzvRFyDy9APla3tIUeTjtEZqSd+lk8uU=  # Assuming you have already copied the key
+      - APP_DEBUG=true
+      - APP_URL=http://localhost  # Assuming your frontend is accessible on localhost
+      - DB_CONNECTION=pgsql  # Not strictly needed here, but can be included for clarity
+      - DB_HOST=postgres  # Connects to the postgres service by name
+      - DB_PORT=5432
+      - DB_DATABASE=php_blog  # Database name
+      - DB_USERNAME=my_user  # Database username
+      - DB_PASSWORD=qwerty004  # Use a strong password here
+      - ...  # Other environment variables from your .env file (if applicable)
+    command: php artisan serve --port=9000
+    
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=php_blog  # Matches the database name in laravel-app
+      - POSTGRES_USER=my_user  # Matches the database username in laravel-app
+      - POSTGRES_PASSWORD=qwerty004  # Matches the password in laravel-app
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
